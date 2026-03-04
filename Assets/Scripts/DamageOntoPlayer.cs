@@ -8,9 +8,10 @@ public class DamageOntoPlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        FirstPersonMovement player = other.GetComponent<FirstPersonMovement>();
+        ThirdPersonMovement player = other.GetComponent<ThirdPersonMovement>();
         if (player != null)
         {
+            // You need to implement TakeDamage in ThirdPersonMovement if not present
             player.TakeDamage(damage, transform.position, knockbackForce);
         }
     }

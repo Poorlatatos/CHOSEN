@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ContainerItemScript : MonoBehaviour
 {
     [Header("Pickup Settings")]
-    public GameObject itemPrefab; // The item to give to the player
-    public GameObject pickupEffectPrefab; // Particle effect to play on pickup
-    public Transform effectSpawnPoint; // Optional: where to spawn the effect
+    public GameObject itemPrefab;
+    public GameObject pickupEffectPrefab;
+    public Transform effectSpawnPoint;
 
     [Header("Interaction")]
     public float interactionRadius = 2f;
@@ -13,6 +14,26 @@ public class ContainerItemScript : MonoBehaviour
 
     private bool canPickup = false;
     private Camera playerCamera;
+
+    // Input Action
+    public InputActionAsset inputActions;
+    InputAction interactAction;
+
+    void Awake()
+    {
+        var playerMap = inputActions.FindActionMap("Player");
+        interactAction = playerMap.FindAction("Interact");
+    }
+
+    void OnEnable()
+    {
+        interactAction.Enable();
+    }
+
+    void OnDisable()
+    {
+        interactAction.Disable();
+    }
 
     void Start()
     {
@@ -42,10 +63,9 @@ public class ContainerItemScript : MonoBehaviour
         {
             promptText.gameObject.SetActive(canPickup);
             if (canPickup)
-                promptText.text = "Press E to pick up";
+                promptText.text = "Press Interact to pick up";
         }
 
-        // Optional: rotate prompt to face camera on Y axis
         if (canPickup && promptText != null && playerCamera != null)
         {
             Vector3 direction = playerCamera.transform.position - promptText.transform.position;
@@ -53,34 +73,32 @@ public class ContainerItemScript : MonoBehaviour
             if (direction.sqrMagnitude > 0.001f)
                 promptText.transform.rotation = Quaternion.LookRotation(-direction);
         }
+
+        // Input System Interact
+        if (canPickup && interactAction.triggered)
+        {
+            TryPickup();
+        }
     }
 
-    // Call this from FirstPersonMovement's interact raycast
     public void TryPickup()
     {
         if (!canPickup) return;
 
-        // Give item to player (expand this for your inventory system)
         if (itemPrefab != null)
         {
-            // Example: instantiate item in front of player, or add to inventory
-            // Instantiate(itemPrefab, playerCamera.transform.position + playerCamera.transform.forward, Quaternion.identity);
-            // TODO: Replace with inventory logic if needed
             Debug.Log("Picked up item: " + itemPrefab.name);
         }
 
-        // Play particle effect
         if (pickupEffectPrefab != null)
         {
             Transform spawnPoint = effectSpawnPoint != null ? effectSpawnPoint : transform;
             Instantiate(pickupEffectPrefab, spawnPoint.position, Quaternion.identity);
         }
 
-        // Hide prompt and disable container
         if (promptText != null)
             promptText.gameObject.SetActive(false);
 
-        // Optionally destroy or disable the container
         gameObject.SetActive(false);
     }
 }

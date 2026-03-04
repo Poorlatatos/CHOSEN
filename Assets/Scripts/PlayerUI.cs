@@ -29,32 +29,6 @@ public class PlayerUI : MonoBehaviour
         }
     }
 
-    public void FadeRestUI(bool show, float duration = 0.3f)
-    {
-        if (restUICanvasGroup == null) return;
-        if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
-
-        if (show)
-            restUI.SetActive(true); // Only activate when fading in
-
-        fadeCoroutine = StartCoroutine(FadeCanvasGroup(restUICanvasGroup, show ? 1 : 0, duration));
-    }
-
-    private System.Collections.IEnumerator FadeCanvasGroup(CanvasGroup cg, float target, float duration)
-    {
-        float start = cg.alpha;
-        float time = 0f;
-        while (time < duration)
-        {
-            cg.alpha = Mathf.Lerp(start, target, time / duration);
-            time += Time.deltaTime;
-            yield return null;
-        }
-        cg.alpha = target;
-        if (target == 0)
-            restUI.SetActive(false); // Only deactivate after fade out
-    }
-
     public void FadeRestUI(bool show)
     {
         if (restUICanvasGroup == null) return;
