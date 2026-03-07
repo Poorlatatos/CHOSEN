@@ -2982,7 +2982,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1991723181}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Player_Root
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3554,7 +3554,7 @@ MonoBehaviour:
   jumpHeight: 1.2
   rollSpeed: 10
   rollDuration: 0.5
-  MaxHealth: 100
+  MaxHealth: 320.6
   Health: 100
   MaxMana: 50
   Mana: 50
